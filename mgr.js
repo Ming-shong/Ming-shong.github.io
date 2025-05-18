@@ -80,11 +80,6 @@ define(['managerAPI',
             header: 'Implicit Association Test'
         }],
 
-        explicits: [{
-            type: 'quest',
-            name: 'explicits',
-            scriptUrl: 'explicits.js'
-        }],
 
         raceiat: [{
             type: 'time',
@@ -156,20 +151,13 @@ define(['managerAPI',
         
         {inherit: 'intro'},
         {
-            mixer:'random',
-            data:[
-                {inherit: 'explicits'},
-
-                // force the instructions to preceed the iat
-                {
-                    mixer: 'wrapper',
-                    data: [
-                        {inherit: 'raceiat_instructions'},
-                        {inherit: 'raceiat'}
-                    ]
-                }
-            ]
-        },
+            {
+		mixer: 'wrapper',
+		data: [
+			{inherit: 'raceiat_instructions'},
+			{inherit: 'raceiat'}
+		]
+	},
 
 		{inherit: 'uploading'},
         {inherit: 'lastpage'},
