@@ -9,7 +9,7 @@ define(['questAPI'], function(Quest){
         noSubmit:false, //Change to true if you don't want to show the submit button.
         header: 'Questionnaire',
         decline: true,
-        declineText: isTouch ? 'Decline' : 'Decline to Answer', 
+        declineText: isTouch ? 'Decline' : '跳過回答', 
         autoFocus:true, 
         progressBar:  'Page <%= pagesMeta.number %> out of 3'
     });
@@ -22,8 +22,8 @@ define(['questAPI'], function(Quest){
         required : true, 		
         errorMsg: {
             required: isTouch 
-                ? 'Please select an answer, or click \'Decline\'' 
-                : 'Please select an answer, or click \'Decline to Answer\''
+                ? 'Please select an answer, or click \'跳過\'' 
+                : 'Please select an answer, or click \'跳過回答\''
         },
         autoSubmit:'true',
         numericValues:'true',
