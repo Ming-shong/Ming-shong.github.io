@@ -42,7 +42,7 @@ define(['pipAPI','https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10.
         attribute1 : {
             name : 'Bad words',
             title : {
-                media : {word : 'Bad words'},
+                media : {word : '負面詞彙'},
                 css : {color:'#0000FF','font-size':'1.8em'},
                 height : 4 //Used to position the "Or" in the combined block.
             },
@@ -62,7 +62,7 @@ define(['pipAPI','https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10.
         attribute2 : {
             name : 'Good words',
             title : {
-                media : {word : 'Good words'},
+                media : {word : '正面詞彙'},
                 css : {color:'#0000FF','font-size':'1.8em'},
                 height : 4 //Used to position the "Or" in the combined block.
             },
