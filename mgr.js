@@ -37,24 +37,24 @@ define(['managerAPI',
         //Select randomly what attribute words to see. 
         //Based on Axt, Feng, & Bar-Anan (2021).
         posWords : API.shuffle([
-            'Love', 'Cheer', 'Friend', 'Pleasure',
-            'Adore', 'Cheerful', 'Friendship', 'Joyful', 
-            'Smiling','Cherish', 'Excellent', 'Glad', 
-            'Joyous', 'Spectacular', 'Appealing', 'Delight', 
-            'Excitement', 'Laughing', 'Attractive','Delightful', 
-            'Fabulous', 'Glorious', 'Pleasing', 'Beautiful', 
-            'Fantastic', 'Happy', 'Lovely', 'Terrific', 
-            'Celebrate', 'Enjoy', 'Magnificent', 'Triumph'
+		'愛', '歡呼', '朋友', '愉快',
+		'崇拜', '快樂的', '友誼', '喜悅',
+		'微笑', '珍惜', '優秀', '高興',
+		'歡欣', '壯觀', '吸引人', '愉悅',
+		'興奮', '笑聲', '有吸引力', '令人愉快',
+		'極好的', '光榮', '令人滿意', '美麗',
+		'極棒', '快樂', '可愛', '了不起',
+		'慶祝', '享受', '宏偉', '勝利'
         ]), 
         negWords : API.shuffle([
-            'Abuse', 'Grief', 'Poison', 'Sadness', 
-            'Pain', 'Despise', 'Failure', 'Nasty', 
-            'Angry', 'Detest', 'Horrible', 'Negative', 
-            'Ugly', 'Dirty', 'Gross', 'Evil', 
-            'Rotten','Annoy', 'Disaster', 'Horrific',  
-            'Scorn', 'Awful', 'Disgust', 'Hate', 
-            'Humiliate', 'Selfish', 'Tragic', 'Bothersome', 
-            'Hatred', 'Hurtful', 'Sickening', 'Yucky'
+		'虐待', '悲傷', '毒藥', '傷心',
+		'疼痛', '鄙視', '失敗', '討厭',
+		'生氣', '厭惡', '可怕', '負面',
+		'醜陋', '骯髒', '噁心', '邪惡',
+		'腐爛', '惱人', '災難', '恐怖',
+		'輕蔑', '糟糕', '厭惡', '仇恨',
+		'羞辱', '自私', '悲劇', '麻煩',
+		'憎恨', '傷害', '令人作嘔', '噁心'
         ])
     });
 
