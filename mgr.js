@@ -80,14 +80,6 @@ define(['managerAPI',
             header: 'Implicit Association Test'
         }],
 
-	results: [{
-	    type: 'message',
-	    name: 'results',
-	    templateUrl: 'results.jst',
-	    title: 'IAT Results',
-	    header: '您的 IAT 結果'
-	}],
-
         raceiat: [{
             type: 'time',
             name: 'raceiat',
