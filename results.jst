@@ -1,14 +1,60 @@
-<div class="panel panel-info" style="margin-top:1em">
-  <div class="panel-heading">
-    <h1 class="panel-title" style="font-size:2em">您的結果</h1>
-  </div>
+<div class="container">
+  <h2>結果分析</h2>
+  <div id="result-text"></div>
+  <canvas id="resultChart" width="400" height="200"></canvas>
 </div>
 
-<div class="panel-body">
-  <p class='lead'>根據您的反應時間，這是您在 IAT 中的結果分析。</p>
-  <canvas id="iatChart" width="400" height="200"></canvas>
-  <p id="iatScoreText" style="margin-top:20px; font-weight: bold;"></p>
-  <div class="text-center" style="margin-top:30px;">
-    <button type="button" class="btn btn-primary" id="endBtn">結束</button>
-  </div>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // 假設 logs 是已經從 MinnoJS 獲得的資料
+  const logs = window.piGlobal && window.piGlobal.logs ? window.piGlobal.logs : [];
+
+  // 過濾 Block 4 與 Block 7 的資料（正式測驗）
+  const testBlocks = logs.filter(log => log.data && (log.data.block === 4 || log.data.block === 7));
+
+  // 依據 block 區分資料
+  const block4 = testBlocks.filter(log => log.data.block === 4);
+  const block7 = testBlocks.filter(log => log.data.block === 7);
+
+  function avgRT(trials) {
+    const valid = trials.filter(t => t.latency >= 300 && t.latency <= 10000);
+    const sum = valid.reduce((acc, t) => acc + t.latency, 0);
+    return valid.length ? (sum / valid.length) : 0;
+  }
+
+  const avg4 = avgRT(block4);
+  const avg7 = avgRT(block7);
+  const diff = avg7 - avg4;
+  let interpretation = '';
+
+  if (Math.abs(diff) < 50) {
+    interpretation = '對兩種分類沒有明顯偏好';
+  } else if (diff > 0) {
+    interpretation = '可能偏好「黑人+壞話 / 白人+好話」的分類方式';
+  } else {
+    interpretation = '可能偏好「白人+壞話 / 黑人+好話」的分類方式';
+  }
+
+  document.getElementById('result-text').innerText = `反應時間差異：約 ${Math.round(diff)} 毫秒\n${interpretation}`;
+
+  // 畫圖
+  new Chart(document.getElementById('resultChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Block 4', 'Block 7'],
+      datasets: [{
+        label: '平均反應時間 (毫秒)',
+        data: [avg4, avg7],
+        backgroundColor: ['#3e95cd', '#8e5ea2']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'IAT 測驗平均反應時間比較' }
+      }
+    }
+  });
+</script>
+
