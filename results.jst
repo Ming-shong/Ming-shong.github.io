@@ -1,0 +1,56 @@
+<div class="panel panel-info" style="margin-top:1em">
+	<div class="panel-heading">
+		<h1 class="panel-title" style="font-size:2em">
+			您的結果
+		</h1>
+	</div>
+</div>
+
+<div class="panel-body">
+	<p class='lead'>
+		根據您的反應時間，這是您在 IAT 中的結果分析。
+	</p>
+	<canvas id="iatChart" width="400" height="200"></canvas>
+	<p id="iatScoreText" style="margin-top:20px; font-weight: bold;"></p>
+</div>
+
+<script>
+(function() {
+	// 模擬資料：你應該用 API.getLogs() 處理真實資料
+	const logs = API.getLogs();
+	
+	// 範例：篩選 Block 3 和 5 的反應時間
+	const block3 = logs.filter(log => log.data && log.data.block === 3).map(log => log.latency);
+	const block5 = logs.filter(log => log.data && log.data.block === 5).map(log => log.latency);
+
+	function mean(arr) {
+		return arr.reduce((a,b) => a+b, 0) / arr.length;
+	}
+
+	const mean3 = mean(block3);
+	const mean5 = mean(block5);
+	const dScore = (mean5 - mean3) / Math.max(...[...block3, ...block5].map(Math.abs));
+
+	// 顯示文字結果
+	const resultText = dScore > 0.15 ? '偏好 A > B' : dScore < -0.15 ? '偏好 B > A' : '無明顯偏好';
+	document.getElementById('iatScoreText').innerText = `您的 D 分數為 ${dScore.toFixed(2)}，結果顯示：${resultText}`;
+
+	// 畫圖表（需 Chart.js）
+	new Chart(document.getElementById("iatChart"), {
+		type: 'bar',
+		data: {
+			labels: ["Block 3", "Block 5"],
+			datasets: [{
+				label: '平均反應時間 (ms)',
+				data: [mean3, mean5],
+				backgroundColor: ['#4e79a7', '#f28e2b']
+			}]
+		},
+		options: {
+			scales: {
+				y: { beginAtZero: true }
+			}
+		}
+	});
+})();
+</script>
