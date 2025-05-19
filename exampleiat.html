@@ -35,7 +35,12 @@
                 minnoJS(canvas, 'mgr.js');
                 
                 // We need to wait a few miliseconds for Qualtrics to register the value that we entered
-                minnoJS.onEnd = function () { setTimeout(proceed, 100); }
+                minnoJS.onEnd = function () {
+	                setTimeout(() => {
+	                    proceed();
+	                    drawChart();
+	                }, 100);
+           	}
             }
         </script>
     </head>
