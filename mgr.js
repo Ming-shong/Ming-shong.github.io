@@ -152,13 +152,13 @@ define(['managerAPI',
         
         {inherit: 'intro'},
         {
-             {
-                    mixer: 'wrapper',
-                    data: [
-                        {inherit: 'raceiat_instructions'},
-                        {inherit: 'raceiat'}
-                    ]
-                }
+        
+                 mixer: 'wrapper',
+                 data: [
+                     {inherit: 'raceiat_instructions'},
+                     {inherit: 'raceiat'}
+                ]
+        
         },
 
 		{inherit: 'uploading'},
