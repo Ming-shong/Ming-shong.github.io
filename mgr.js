@@ -155,7 +155,7 @@ define(['managerAPI',
             ]
         },
         
-        {inherit: 'results'},
+        
 	    
         {inherit: 'intro'},
         {
