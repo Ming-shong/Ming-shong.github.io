@@ -85,8 +85,51 @@ define(['managerAPI',
 	    name: 'results',
 	    templateUrl: 'results.jst',
 	    title: 'IAT Results',
-	    header: '您的 IAT 結果'
-	}],
+	    header: '您的 IAT 結果',
+	    script: () => {
+		  setTimeout(() => {
+		    const logs = API.getLogs();
+		
+		    const block3 = logs.filter(log => log.data && log.data.block === 3).map(log => log.latency);
+		    const block5 = logs.filter(log => log.data && log.data.block === 5).map(log => log.latency);
+		
+		    function mean(arr) {
+		      return arr.reduce((a,b) => a+b, 0) / arr.length;
+		    }
+		
+		    const mean3 = mean(block3);
+		    const mean5 = mean(block5);
+		    const dScore = (mean5 - mean3) / Math.max(...[...block3, ...block5].map(Math.abs));
+		
+		    const resultText = dScore > 0.15 ? '偏好 A > B' : dScore < -0.15 ? '偏好 B > A' : '無明顯偏好';
+		    document.getElementById('iatScoreText').innerText = `您的 D 分數為 ${dScore.toFixed(2)}，結果顯示：${resultText}`;
+		
+		    new Chart(document.getElementById("iatChart"), {
+		      type: 'bar',
+		      data: {
+		        labels: ["Block 3", "Block 5"],
+		        datasets: [{
+		          label: '平均反應時間 (ms)',
+		          data: [mean3, mean5],
+		          backgroundColor: ['#4e79a7', '#f28e2b']
+		        }]
+		      },
+		      options: {
+		        scales: {
+		          y: { beginAtZero: true }
+		        }
+		      }
+		    });
+		
+		    // 結束按鈕事件綁定
+		    document.getElementById('endBtn').addEventListener('click', () => {
+		      API.end();
+		    });
+		
+		  }, 50); // 延遲執行，確保元素已經渲染
+		}
+	    
+	  }],
 
         raceiat: [{
             type: 'time',
