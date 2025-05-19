@@ -14,35 +14,39 @@
 	<p id="iatScoreText" style="margin-top:20px; font-weight: bold;"></p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 (function() {
-	// 模擬資料：你應該用 API.getLogs() 處理真實資料
+	// 取得真實資料
 	const logs = API.getLogs();
 	
-	// 範例：篩選 Block 3 和 5 的反應時間
-	const block3 = logs.filter(log => log.data && log.data.block === 3).map(log => log.latency);
-	const block5 = logs.filter(log => log.data && log.data.block === 5).map(log => log.latency);
+	// 篩選正式測試區塊 Block 4 和 Block 7 的反應時間
+	const block4 = logs.filter(log => log.data && log.data.block === 4).map(log => log.latency);
+	const block7 = logs.filter(log => log.data && log.data.block === 7).map(log => log.latency);
 
 	function mean(arr) {
 		return arr.reduce((a,b) => a+b, 0) / arr.length;
 	}
 
-	const mean3 = mean(block3);
-	const mean5 = mean(block5);
-	const dScore = (mean5 - mean3) / Math.max(...[...block3, ...block5].map(Math.abs));
+	const mean4 = mean(block4);
+	const mean7 = mean(block7);
+	const dScore = (mean7 - mean4) / Math.max(...[...block4, ...block7].map(Math.abs));
 
 	// 顯示文字結果
-	const resultText = dScore > 0.15 ? '偏好 A > B' : dScore < -0.15 ? '偏好 B > A' : '無明顯偏好';
+	const resultText = dScore > 0.15 ? '偏好 黑人+壞話 > 白人+好話' 
+						: dScore < -0.15 ? '偏好 白人+壞話 > 黑人+好話' 
+						: '無明顯偏好';
 	document.getElementById('iatScoreText').innerText = `您的 D 分數為 ${dScore.toFixed(2)}，結果顯示：${resultText}`;
 
 	// 畫圖表（需 Chart.js）
 	new Chart(document.getElementById("iatChart"), {
 		type: 'bar',
 		data: {
-			labels: ["Block 3", "Block 5"],
+			labels: ["Block 4", "Block 7"],
 			datasets: [{
 				label: '平均反應時間 (ms)',
-				data: [mean3, mean5],
+				data: [mean4, mean7],
 				backgroundColor: ['#4e79a7', '#f28e2b']
 			}]
 		},
@@ -54,3 +58,7 @@
 	});
 })();
 </script>
+
+<div class="text-center" style="margin-top:30px;">
+	<button type="button" class="btn btn-primary" onclick="API.end()">結束</button>
+</div>
