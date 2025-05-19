@@ -1,50 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <title>結果頁面</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #chart-container {
-            max-width: 600px;
-            margin: auto;
-        }
-    </style>
-</head>
-<body>
+define(['managerAPI',
+		'https://cdn.jsdelivr.net/gh/minnojs/minno-datapipe@1.*/datapipe.min.js'], function(Manager){
 
-<h2>Block 5 與 Block 7 平均反應時間</h2>
 
-<div id="chart-container">
-    <canvas id="latencyChart" width="600" height="300"></canvas>
-</div>
+	//You can use the commented-out code to get parameters from the URL.
+	//const queryString = window.location.search;
+    //const urlParams = new URLSearchParams(queryString);
+    //const pt = urlParams.get('pt');
 
-<script>
-    // logs 資料會從 Minno.js 傳進來，假設變數名是 logs
-    // 這裡用 JST 模板語法把 logs 轉成 JS 物件
-    var logs = <%= JSON.stringify(logs) %>;
+	var API    = new Manager();
+	//const subid = Date.now().toString(16)+Math.floor(Math.random()*10000).toString(16);
+	init_data_pipe(API, 'tXppJ85gxZfs',  {file_type:'csv'});	
 
-    // 篩選出 block = 5 和 block = 7 的資料
-    var block5Logs = logs.filter(log => log.data && log.data.block === 5);
-    var block7Logs = logs.filter(log => log.data && log.data.block === 7);
+    API.setName('mgr');
+    API.addSettings('skip',true);
 
-    // 計算平均反應時間函式
-    function averageLatency(logs) {
-        if(logs.length === 0) return 0;
-        var total = logs.reduce(function(sum, log) {
-            return sum + (log.latency || 0);
-        }, 0);
-        return total / logs.length;
+    //Randomly select which of two sets of category labels to use.
+    let raceSet = API.shuffle(['a','b'])[0];
+    let blackLabels = [];
+    let whiteLabels = [];
+
+    if (raceSet == 'a') {
+        blackLabels.push('非裔美國人');
+        whiteLabels.push('歐洲裔美國人');
+    } else {
+        blackLabels.push('黑人');
+        whiteLabels.push('白人');
     }
 
-    var avgLatencyBlock5 = averageLatency(block5Logs);
-    var avgLatencyBlock7 = averageLatency(block7Logs);
+    API.addGlobal({
+        raceiat:{},
+        //YBYB: change when copying back to the correct folder
+        baseURL: './images/',
+        raceSet:raceSet,
+        blackLabels:blackLabels,
+        whiteLabels:whiteLabels,
+        //Select randomly what attribute words to see. 
+        //Based on Axt, Feng, & Bar-Anan (2021).
+        posWords : API.shuffle([
+		'愛', '歡呼', '朋友', '愉快',
+		'崇拜', '快樂的', '友誼', '喜悅',
+		'微笑', '珍惜', '優秀', '高興',
+		'歡欣', '壯觀', '吸引人', '愉悅',
+		'興奮', '笑聲', '有吸引力', '令人愉快',
+		'極好的', '光榮', '令人滿意', '美麗',
+		'極棒', '快樂', '可愛', '了不起',
+		'慶祝', '享受', '宏偉', '勝利'
+        ]), 
+        negWords : API.shuffle([
+		'虐待', '悲傷', '毒藥', '傷心',
+		'疼痛', '鄙視', '失敗', '討厭',
+		'生氣', '厭惡', '可怕', '負面',
+		'醜陋', '骯髒', '噁心', '邪惡',
+		'腐爛', '惱人', '災難', '恐怖',
+		'輕蔑', '糟糕', '厭惡', '仇恨',
+		'羞辱', '自私', '悲劇', '麻煩',
+		'憎恨', '傷害', '令人作嘔', '噁心'
+        ])
+    });
 
-    // 使用 Chart.js 畫出柱狀圖
-    var ctx = document.getElementById('latencyChart').getContext('2d');
-    var latencyChart = new Chart(ctx, {
-        type:
+    API.addTasksSet({
+        instructions: [{
+            type: 'message',
+            buttonText: 'Continue'
+        }],
+
+        intro: [{
+            inherit: 'instructions',
+            name: 'intro',
+            templateUrl: 'intro.jst',
+            title: 'Intro',
+            header: 'Welcome'
+        }],
+
+        raceiat_instructions: [{
+            inherit: 'instructions',
+            name: 'raceiat_instructions',
+            templateUrl: 'raceiat_instructions.jst',
+            title: 'IAT Instructions',
+            header: 'Implicit Association Test'
+        }],
+
+	results: [{
+	    type: 'message',
+	    name: 'results',
+	    templateUrl: 'results.jst',
+	    title: 'IAT Results',
+	    header: '您的 IAT 結果'
+	}],
+
+        raceiat: [{
+            type: 'time',
+            name: 'raceiat',
+            scriptUrl: 'raceiat.js'
+        }],
+
+        lastpage: [{
+            type: 'message',
+            name: 'lastpage',
+            templateUrl: 'lastpage.jst',
+            title: 'End',
+            //Uncomment the following if you want to end the study here.
+            //last:true, 
+            header: 'You have completed the study'
+        }], 
+        
+        //Use if you want to redirect the participants elsewhere at the end of the study
+        redirect:
+        [{ 
+			//Replace with any URL you need to put at the end of your study, or just remove this task from the sequence below
+            type:'redirect', name:'redirecting', url: 'https://www.google.com/search' 
+        }],
+		
+		//This task waits until the data are sent to the server.
+        uploading: uploading_task({header: 'just a moment', body:'Please wait, sending data... '})
+    });
+
+    API.addSequence([
+        { type: 'isTouch' }, //Use Minno's internal touch detection mechanism. 
+        
+        { type: 'post', path: ['$isTouch', 'raceSet', 'blackLabels', 'whiteLabels'] },
+
+        // apply touch only styles
+        {
+            mixer:'branch',
+            conditions: {compare:'global.$isTouch', to: true},
+            data: [
+                {
+                    type: 'injectStyle',
+                    css: [
+                        '* {color:red}',
+                        '[piq-page] {background-color: #fff; border: 1px solid transparent; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; border-color: #bce8f1;}',
+                        '[piq-page] > ol {margin: 15px;}',
+                        '[piq-page] > .btn-group {margin: 0px 15px 15px 15px;}',
+                        '.container {padding:5px;}',
+                        '[pi-quest]::before, [pi-quest]::after {content: " ";display: table;}',
+                        '[pi-quest]::after {clear: both;}',
+                        '[pi-quest] h3 { border-bottom: 1px solid transparent; border-top-left-radius: 3px; border-top-right-radius: 3px; padding: 10px 15px; color: inherit; font-size: 2em; margin-bottom: 20px; margin-top: 0;background-color: #d9edf7;border-color: #bce8f1;color: #31708f;}',
+                        '[pi-quest] .form-group > label {font-size:1.2em; font-weight:normal;}',
+
+                        '[pi-quest] .btn-toolbar {margin:15px;float:none !important; text-align:center;position:relative;}',
+                        '[pi-quest] [ng-click="decline($event)"] {position:absolute;right:0;bottom:0}',
+                        '[pi-quest] [ng-click="submit()"] {width:30%;line-height: 1.3333333;border-radius: 6px;}',
+                        // larger screens
+                        '@media (min-width: 480px) {',
+                        ' [pi-quest] [ng-click="submit()"] {width:30%;padding: 10px 16px;font-size: 1.6em;}',
+                        '}',
+                        // phones and smaller screens
+                        '@media (max-width: 480px) {',
+                        ' [pi-quest] [ng-click="submit()"] {padding: 8px 13px;font-size: 1.2em;}',
+                        ' [pi-quest] [ng-click="decline($event)"] {font-size: 0.9em;padding:3px 6px;}',
+                        '}'
+                    ]
+                }
+            ]
+        },
+        
+        
+	    
+        {inherit: 'intro'},
+        {
+        
+                 mixer: 'wrapper',
+                 data: [
+                     {inherit: 'raceiat_instructions'},
+                     {inherit: 'raceiat'}
+                ]
+        
+        },
+
+		{inherit: 'uploading'},
+        {inherit: 'lastpage'},
+	{inherit: 'results'},
+        {inherit: 'redirect'}
+    ]);
+
+    return API.script;
+});
