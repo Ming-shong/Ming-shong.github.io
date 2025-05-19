@@ -13,34 +13,6 @@ define(['managerAPI',
 
     API.setName('mgr');
     API.addSettings('skip',true);
-
-	// 定義 logger 並儲存資料到 window.loggedIATData
-	API.addSettings('logger', {
-		pulse: 0,
-		// 不送資料到伺服器時，可不寫 url
-		logger: function(trialData, inputData, actionData, logStack){
-			var stimList = this._stimulus_collection.get_stimlist();
-			var mediaList = this._stimulus_collection.get_medialist();
-			
-			// 初始化 global 陣列
-			if (!window.loggedIATData) window.loggedIATData = [];
-
-			const logRow = {
-				log_serial : logStack.length,
-				trial_id: this._id,
-				name: this.name(),
-				responseHandle: inputData.handle,
-				latency: Math.floor(inputData.latency),
-				stimuli: stimList,
-				media: mediaList,
-				data: trialData
-			};
-
-			// 將每筆 log 儲存到 global 變數中供 results 使用
-			window.loggedIATData.push(logRow);
-			return logRow;
-		}
-	});
 	
     //Randomly select which of two sets of category labels to use.
     let raceSet = API.shuffle(['a','b'])[0];
