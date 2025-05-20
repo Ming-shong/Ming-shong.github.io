@@ -156,7 +156,7 @@ define(['managerAPI',
   },
 
 	    
-        { type: 'post', path: ['$isTouch', 'raceSet', 'blackLabels', 'whiteLabels'] },
+        { type: 'post', path: ['$isTouch', 'raceSet', 'blackLabels', 'whiteLabels', 'yellowLabels'] },
 
         // apply touch only styles
         {
