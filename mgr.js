@@ -15,25 +15,21 @@ define(['managerAPI',
     API.addSettings('skip',true);
 	
     //Randomly select which of two sets of category labels to use.
-    let raceSet = API.shuffle(['a','b'])[0];
     let blackLabels = [];
     let whiteLabels = [];
+	let yellowLabels = [];
 
-    if (raceSet == 'a') {
-        blackLabels.push('非裔美國人');
-        whiteLabels.push('歐洲裔美國人');
-    } else {
-        blackLabels.push('黑人');
-        whiteLabels.push('白人');
-    }
-
+    
+	
     API.addGlobal({
         raceiat:{},
         //YBYB: change when copying back to the correct folder
         baseURL: './images/',
-        raceSet:raceSet,
+        raceSet:null,
         blackLabels:blackLabels,
         whiteLabels:whiteLabels,
+	yellowLabels:yellowLabels,
+	
         //Select randomly what attribute words to see. 
         //Based on Axt, Feng, & Bar-Anan (2021).
         posWords : API.shuffle([
@@ -72,6 +68,27 @@ define(['managerAPI',
             header: 'Welcome'
         }],
 
+	select: [{
+        type: 'quest',
+        name: 'select',
+        description: '請選擇一個測試版本（這會影響實驗組別）',
+        questions: [
+            {
+                type: 'selectOne',
+                name: 'raceSet',
+                stem: '請選擇你要的版本',
+                answers: [
+                    {text: '黑白', value: 'a'},
+                    {text: '黑黃', value: 'b'},
+                    {text: '白黃', value: 'c'}
+                ],
+                required: true
+            }
+        ]
+    }],
+
+
+	    
         raceiat_instructions: [{
             inherit: 'instructions',
             name: 'raceiat_instructions',
@@ -109,7 +126,36 @@ define(['managerAPI',
 
     API.addSequence([
         { type: 'isTouch' }, //Use Minno's internal touch detection mechanism. 
-        
+
+	{inherit: 'select'},
+
+	{ // 下一個任務中動態設定標籤
+    type: 'call-function',
+    name: 'setLabels',
+    func: function() {
+      let raceSet = API.getCurrent().select.raceSet;
+      API.addGlobal({raceSet: raceSet});  // 設定raceSet
+
+      let blackLabels = [];
+      let whiteLabels = [];
+      let yellowLabels = [];
+
+      if (raceSet === 'a') {
+        blackLabels.push('黑人');
+        whiteLabels.push('白人');
+      } else if (raceSet === 'b') {
+        blackLabels.push('黑人');
+        yellowLabels.push('黃人');
+      } else {
+        whiteLabels.push('白人');
+        yellowLabels.push('黃人');
+      }
+
+      API.addGlobal({blackLabels: blackLabels, whiteLabels: whiteLabels, yellowLabels: yellowLabels});
+    }
+  },
+
+	    
         { type: 'post', path: ['$isTouch', 'raceSet', 'blackLabels', 'whiteLabels'] },
 
         // apply touch only styles
@@ -148,6 +194,7 @@ define(['managerAPI',
         },
         
         
+	
 	    
         {inherit: 'intro'},
         {
