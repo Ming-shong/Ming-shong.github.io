@@ -21,10 +21,10 @@ define(['managerAPI',
 
     if (raceSet == 'a') {
         blackLabels.push('非裔美國人');
-        whiteLabels.push('歐洲裔美國人');
+        whiteLabels.push('亞裔美國人');
     } else {
         blackLabels.push('黑人');
-        whiteLabels.push('白人');
+        whiteLabels.push('黃人');
     }
 
     API.addGlobal({
