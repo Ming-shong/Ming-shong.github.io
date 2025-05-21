@@ -30,18 +30,22 @@
 <body onclick="playJumpScare()">
   <div id="message">點一下畫面開始</div>
 
-  <!-- mp4 影片 -->
-  <video id="scareVideo">
-    <source src="./jeff.mp4" type="video/mp4">
-    您的瀏覽器不支援影片播放。
+  <video id="scareVideo" preload="auto">
+    <source src="jeff.mp4" type="video/mp4">
+    您的瀏覽器不支援播放影片。
   </video>
 
   <script>
     function playJumpScare() {
-      document.getElementById('message').style.display = 'none';
+      const message = document.getElementById('message');
       const video = document.getElementById('scareVideo');
+      message.style.display = 'none';
       video.style.display = 'block';
-      video.play();
+      video.muted = false; // 確保開聲音
+      video.play().catch(error => {
+        alert("影片無法播放：" + error.message);
+        console.error("影片播放錯誤：", error);
+      });
     }
   </script>
 </body>
