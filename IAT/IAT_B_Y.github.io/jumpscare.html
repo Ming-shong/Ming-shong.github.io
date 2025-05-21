@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>Jump Scare</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      cursor: pointer;
+    }
+    #message {
+      color: white;
+      font-size: 2rem;
+      position: absolute;
+      top: 20px;
+      font-family: sans-serif;
+    }
+    #scareVideo {
+      display: none;
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+</head>
+<body onclick="playJumpScare()">
+  <div id="message">點一下畫面開始</div>
+
+  <!-- mp4 影片 -->
+  <video id="scareVideo">
+    <source src="JEFF.mp4" type="video/mp4">
+    您的瀏覽器不支援影片播放。
+  </video>
+
+  <script>
+    function playJumpScare() {
+      document.getElementById('message').style.display = 'none';
+      const video = document.getElementById('scareVideo');
+      video.style.display = 'block';
+      video.play();
+    }
+  </script>
+</body>
+</html>
