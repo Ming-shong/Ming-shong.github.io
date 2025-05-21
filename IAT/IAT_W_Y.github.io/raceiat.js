@@ -11,12 +11,12 @@ define(['pipAPI','https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10.
                 height : 4 //Used to position the "Or" in the combined block.
             }, 
             stimulusMedia : [ //Stimuli content as PIP's media objects
-                {image: 'bm1_nc.jpg'},
-                {image: 'bm2_nc.jpg'},
-                {image: 'bm3_nc.jpg'},
-                {image: 'bf1_nc.jpg'},
-                {image: 'bf2_nc.jpg'},                 
-                {image: 'bf3_nc.jpg'}     
+                {image: 'ym1_nc.jpg'},
+                {image: 'ym2_nc.jpg'},
+                {image: 'ym3_nc.jpg'},
+                {image: 'yf1_nc.jpg'},
+                {image: 'yf2_nc.jpg'},                 
+                {image: 'yf3_nc.jpg'}     
             ],
             //Stimulus css (style)
             stimulusCss : {color:'#31940F','font-size':'2.3em'}
@@ -39,24 +39,7 @@ define(['pipAPI','https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10.
             //Stimulus css (style)
             stimulusCss : {color:'#31940F','font-size':'2.3em'}
         },
-        category3 : {
-            name : global.yellowLabels, //Will appear in the data.
-            title : {
-                media : {word : global.yellowLabels}, //Name of the category presented in the task.
-                css : {color:'#31940F','font-size':'1.8em'}, //Style of the category title.
-                height : 4 //Used to position the "Or" in the combined block.
-            }, 
-            stimulusMedia : [ //Stimuli content as PIP's media objects
-                {image: 'ym1_nc.jpg'},
-                {image: 'ym2_nc.jpg'},
-                {image: 'ym3_nc.jpg'},
-                {image: 'yf1_nc.jpg'},
-                {image: 'yf2_nc.jpg'},
-                {image: 'yf3_nc.jpg'}
-            ],
-            //Stimulus css (style)
-            stimulusCss : {color:'#31940F','font-size':'2.3em'}
-        },
+        
        
         
         attribute1 : {
